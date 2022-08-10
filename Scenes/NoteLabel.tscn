@@ -1,0 +1,79 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Themes/Roboto-Bold.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Scripts/NoteLabel.gd" type="Script" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+size = 33
+outline_size = 4
+use_filter = true
+font_data = ExtResource( 1 )
+
+[sub_resource type="Animation" id=2]
+resource_name = "FallingAnimation"
+length = 4.0
+tracks/0/type = "transform"
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = PoolRealArray( 0, 1, 0, 0, -60, 0, 0, 0, 1, 1, 1, 1, 4, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1 )
+tracks/1/type = "value"
+tracks/1/path = NodePath("../LabelRect:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 4 ),
+"transitions": PoolRealArray( 1.46408, 1 ),
+"update": 0,
+"values": [ Color( 0.937255, 0.878431, 0, 0 ), Color( 1, 1, 1, 0.498039 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("../LabelRect:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+
+[sub_resource type="DynamicFont" id=8]
+size = 21
+outline_size = 15
+outline_color = Color( 0.388235, 0.12549, 0.12549, 1 )
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 19
+font_data = ExtResource( 1 )
+
+[node name="NoteLabel" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="LabelNumber" type="Label3D" parent="."]
+modulate = Color( 0.968627, 1, 0, 1 )
+text = "25"
+font = SubResource( 1 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="LabelNumber"]
+anims/FallingAnimation = SubResource( 2 )
+
+[node name="Label3D" type="Label3D" parent="LabelNumber"]
+modulate = Color( 0, 0, 0, 1 )
+outline_modulate = Color( 0.937255, 0.572549, 0.572549, 1 )
+text = "o"
+font = SubResource( 8 )
+
+[node name="LabelRect" type="Label3D" parent="."]
+modulate = Color( 1, 1, 1, 0.498039 )
+text = "[lmao]"
+font = SubResource( 3 )
+
+[connection signal="animation_finished" from="LabelNumber/AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

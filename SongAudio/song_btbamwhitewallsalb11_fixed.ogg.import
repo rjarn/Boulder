@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/song_btbamwhitewallsalb11_fixed.ogg-26565ad4bbaaab10302d4efcc7bf60b7.oggstr"
+
+[deps]
+
+source_file="res://SongAudio/song_btbamwhitewallsalb11_fixed.ogg"
+dest_files=[ "res://.import/song_btbamwhitewallsalb11_fixed.ogg-26565ad4bbaaab10302d4efcc7bf60b7.oggstr" ]
+
+[params]
+
+loop=true
+loop_offset=0
