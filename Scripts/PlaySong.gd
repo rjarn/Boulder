@@ -28,6 +28,9 @@ var actualNoteArray = []
 var actualTimeArray = []
 var actualStringArray = []
 
+#WIP
+var actualChordTimeArray = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -62,6 +65,7 @@ func _process(_delta):
 func _on_Button_pressed():
 	parse_xml_charts_with_regex()
 	test_song()
+	print(actualChordTimeArray)
 	#var newNote = note.instance()
 	#add_child(newNote)
 	#newNote.translation = Vector3(3, -.3, 0)
@@ -291,4 +295,47 @@ func parse_xml_charts_with_regex():
 		#print(test3.get_string(0))
 		actualStringArray.append(int(test3.get_string(0)))
 		test3 = regex.search(sectionOfDoc, test3.get_end(0))
+		
+	# GRABS CHORD TIME VARIABLE OF TYPE FLOAT
+	# =====================================
+	# actual regex is (?<=chord time=\")(.*?)(?=\")
+	# the one below will probably have confusing literal keywords that are for gdscript
+	var try8 = "(?<=chord time=\")(.*?)(?=\")"
+	
+	regex.compile(try8)
+	var test4 = regex.search(sectionOfDoc)
+	
+	while test4 != null:
+		#i dont remember what this line does
+		print(test4.get_string(0))
+		actualChordTimeArray.append(int(test4.get_string(0)))
+		test4 = regex.search(sectionOfDoc, test4.get_end(0))
+		
+		#todo make variable for chord information
+		# and figure out what chord information i need to collect
+		
+	#next up is the chord ID number, as well as the chord templates
+	#the chord templates need to be ordered as received, and also referenced
+	#by the order it is listed, instead of having an "ID" that is unique
+	#which is dumb that they dont have that
+	#like some of them are listed Cb5 or something
+	#but a lot of them have blank fields
+	#and its really dumb 
+	
+	#actual regex is (?<=chordId=")(.*?)(?=")
+	# "\" makes the next character a literal
+	var test9 = "(?<=chordId=\")(.*?)(?=\")"
+	
+	#the variable that holds chords notes is unique
+	#so im just grabbing all 6 variables for each string
+	#fret0 - fret 5
+	#if the value is "-1", then it is an open string 
+	#actual regex for this is as follows:
+	# (?<=fret0=")(.*?)(?=")
+	# (?<=fret1=")(.*?)(?=")
+	# (?<=fret2=")(.*?)(?=")
+	# (?<=fret3=")(.*?)(?=")
+	# (?<=fret4=")(.*?)(?=")
+	# (?<=fret5=")(.*?)(?=")
 	pass
+
