@@ -30,9 +30,18 @@ var actualStringArray = []
 
 #WIP
 var actualChordTimeArray = []
+var actualChordIDArray = []
+
+var actualChordLowEstring = []
+var actualChordAstring = []
+var actualChordDstring = []
+var actualChordGstring = []
+var actualChordBstring = []
+var actualChordHighEstring = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	testChord()
 	pass # Replace with function body.
 
 
@@ -63,9 +72,12 @@ func _process(_delta):
 
 
 func _on_Button_pressed():
-	parse_xml_charts_with_regex()
+	#parse_xml_charts_with_regex()
+	betterRegexMethod()
 	test_song()
-	print(actualChordTimeArray)
+	displayChords()
+	#trialCombineNoteData()
+	#print(actualChordTimeArray)
 	#var newNote = note.instance()
 	#add_child(newNote)
 	#newNote.translation = Vector3(3, -.3, 0)
@@ -226,9 +238,10 @@ func parse_xml_charts_with_regex():
 	
 	# below is for the poorly made chart "sfumato" where it has 16 difficulty groupings?
 	# im sticking with the one farther below called "try4"
-	# because idk why a single non dynamic difficulty char needs 16 difficulties
+	# because idk why a single non dynamic difficulty chart needs 16 difficulties
 	
 	#var try4 = "(?=level difficulty=\"14\")[\\s\\S]*(?=level difficulty=\"15\")"
+	
 	var try4 = "(?=level difficulty=\"0\")[\\s\\S]*(?=</level>)"
 	
 	
@@ -256,6 +269,10 @@ func parse_xml_charts_with_regex():
 	var try5 = "(?<=fret=\")(.*?)(?=\")"
 	
 	regex.compile(try5)
+	
+	# i might only need to do this once
+	# instead of for every regex search
+	# but whatever yolo
 	var test = regex.search(sectionOfDoc)
 	
 	#ty reddit
@@ -324,7 +341,16 @@ func parse_xml_charts_with_regex():
 	
 	#actual regex is (?<=chordId=")(.*?)(?=")
 	# "\" makes the next character a literal
-	var test9 = "(?<=chordId=\")(.*?)(?=\")"
+	var try9 = "(?<=chordId=\")(.*?)(?=\")"
+	
+	regex.compile(try9)
+	var test5 = regex.search(sectionOfDoc)
+	
+	while test5 != null:
+		#i dont remember what this line does
+		#print(test5.get_string(0))
+		actualChordTimeArray.append(int(test5.get_string(0)))
+		test5 = regex.search(sectionOfDoc, test5.get_end(0))
 	
 	#the variable that holds chords notes is unique
 	#so im just grabbing all 6 variables for each string
@@ -339,3 +365,315 @@ func parse_xml_charts_with_regex():
 	# (?<=fret5=")(.*?)(?=")
 	pass
 
+func betterRegexMethod():
+	
+	# regex descriptions above each variable declaration
+	
+	# grabs the target difficulty section only to parse through
+	# level difficulty sections might be related to dynamic difficulty
+	# -- Begin grabbing individual note data --
+	var try4 = "(?=level difficulty=\"0\")[\\s\\S]*(?=</level>)"
+	
+	# grabs note fret location from section
+	var try5 = "(?<=fret=\")(.*?)(?=\")"
+	
+	# grabs note time from section
+	var try6 = "(?<=note time=\")(.*?)(?=\")"
+	
+	# grabs target string from section
+	var try7 = "(?<=string=\")\\d*(?=\")"
+	
+	# -- End grabbing individual note data --
+	# -- Begin grabbing chord data --
+	
+	# grabs target chord time of upcoming chord
+	var try8 = "(?<=chord time=\")(.*?)(?=\")"
+	
+	# grabs chord id of upcoming note/chord
+	
+	# *** the chord id is referenced in order from
+	# how the chord templates get created
+	# 	ie. the first chord template in the list is "1"
+	#		the second chord in the template is "2"
+	var try9 = "(?<=chordId=\")(.*?)(?=\")"
+	
+	# grabs low E string note from chord
+	var try10 = "(?<=fret0=\")(.*?)(?=\")"
+	
+	# grabs A string note from chord
+	var try11 = "(?<=fret1=\")(.*?)(?=\")"
+	
+	# grabs D string note from chord
+	var try12 = "(?<=fret2=\")(.*?)(?=\")"
+	
+	# grabs G string note from chord
+	var try13 = "(?<=fret3=\")(.*?)(?=\")"
+	
+	# grabs B string note from chord
+	var try14 = "(?<=fret4=\")(.*?)(?=\")"
+	
+	# grabs high E string note from chord
+	var try15 = "(?<=fret5=\")(.*?)(?=\")"
+	
+	# --- End regex statements ---
+	# --- Begin file operations,
+	#     data organization into arrays,
+	#     and regex statement executions
+	
+	var file = File.new()
+	file.open("res://Songcharts/btbamwhitewallsalb11_lead.xml", 1)
+	
+	var wholeFile = file.get_as_text()
+	
+	var regex = RegEx.new()
+	
+	regex.compile(try4)
+	
+	var partOfFile = regex.search(wholeFile).get_string()
+	
+	#grab and organize fret data
+	regex.compile(try5)
+	var test = regex.search(partOfFile)
+	while test != null:
+		actualNoteArray.append(int(test.get_string(0)))
+		test = regex.search(partOfFile, test.get_end(0))
+	regex.clear()
+	
+	#grab and organize time data
+	# data needs to be in a float format
+	regex.compile(try6)
+	test = regex.search(partOfFile)
+	while test != null:
+		actualTimeArray.append(float(test.get_string(0)))
+		test = regex.search(partOfFile, test.get_end(0))
+	regex.clear()
+	
+	# grab and organize string data
+	regex.compile(try7)
+	test = regex.search(partOfFile)
+	while test != null:
+		actualStringArray.append(int(test.get_string(0)))
+		test = regex.search(partOfFile, test.get_end(0))
+	regex.clear()
+	
+	# -- End individual note gathering --
+	
+	# -- Begin chord info gathering --
+	
+	# chord arrival time
+	regex.compile(try8)
+	test = regex.search(wholeFile)
+	while test != null:
+		actualChordTimeArray.append(float(test.get_string(0)))
+		test = regex.search(wholeFile, test.get_end(0))
+	regex.clear()
+	
+	# chord ID (based off the order of documented chord templates)
+	# ie. the first chord in the template is 1, next is 2, etc.
+	regex.compile(try9)
+	test = regex.search(wholeFile)
+	while test != null:
+		actualChordIDArray.append(int(test.get_string(0)))
+		test = regex.search(wholeFile, test.get_end(0))
+	regex.clear()
+	
+	# low E string
+	regex.compile(try10)
+	test = regex.search(wholeFile)
+	while test != null:
+		actualChordLowEstring.append(int(test.get_string(0)))
+		test = regex.search(wholeFile, test.get_end(0))
+	regex.clear()
+	
+	# A string
+	regex.compile(try11)
+	test = regex.search(wholeFile)
+	while test != null:
+		actualChordAstring.append(int(test.get_string(0)))
+		test = regex.search(wholeFile, test.get_end(0))
+	regex.clear()
+	
+	# D string
+	regex.compile(try12)
+	test = regex.search(wholeFile)
+	while test != null:
+		actualChordDstring.append(int(test.get_string(0)))
+		test = regex.search(wholeFile, test.get_end(0))
+	regex.clear()
+	
+	# G string
+	regex.compile(try13)
+	test = regex.search(wholeFile)
+	while test != null:
+		actualChordGstring.append(int(test.get_string(0)))
+		test = regex.search(wholeFile, test.get_end(0))
+	regex.clear()
+	
+	# B string
+	regex.compile(try14)
+	test = regex.search(wholeFile)
+	while test != null:
+		actualChordBstring.append(int(test.get_string(0)))
+		test = regex.search(wholeFile, test.get_end(0))
+	regex.clear()
+	
+	# high E string
+	regex.compile(try15)
+	test = regex.search(wholeFile)
+	while test != null:
+		actualChordHighEstring.append(int(test.get_string(0)))
+		test = regex.search(wholeFile, test.get_end(0))
+	regex.clear()
+	
+	# -- End chord info gathering --
+	pass
+
+func testChord():
+	var note1 = note.instance()
+	var note2 = note.instance()
+	var note3 = note.instance()
+	
+	note1.translation.x = fret_coords[2]
+	note1.translation.y = string_coords[1]
+	note1.get_child(0).set_text("2")
+	note1.get_child(0).modulate = Color.yellow
+	
+	note2.translation.x = fret_coords[2]
+	note2.translation.y = string_coords[2]
+	note2.get_child(0).set_text("2")
+	note2.get_child(0).modulate = Color.cornflower
+	
+	note3.translation.x = fret_coords[1]
+	note3.translation.y = string_coords[3]
+	note3.get_child(0).set_text("1")
+	note3.get_child(0).modulate = Color.orange
+	
+	add_child(note1)
+	add_child(note2)
+	add_child(note3)
+	
+	note1.get_child(0).get_child(0).play("FallingAnimation")
+	note2.get_child(0).get_child(0).play("FallingAnimation")
+	note3.get_child(0).get_child(0).play("FallingAnimation")
+	pass
+
+func displayChords():
+	for i in actualChordTimeArray.size():
+		
+		var chordID = actualChordIDArray[i]
+		
+		var noteLowE = null
+		var noteA = null
+		var noteD = null
+		var noteG = null
+		var noteB = null
+		var noteHighE = null
+		
+		"""if actualChordTimeArray[i] != null:
+			print(i)
+			print(actualChordTimeArray[i])
+			if i == 0:
+				yield(get_tree().create_timer(actualChordTimeArray[i]), "timeout")
+			else:
+				# TODO suppress error with the last field in ActualTimeArray
+				# it says that the field is null and crashes
+				var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
+				yield(get_tree().create_timer(targetTime), "timeout")"""
+		
+		if actualChordLowEstring[chordID] >= 0:
+			noteLowE = note.instance()
+			noteLowE.translation.x = fret_coords[actualChordLowEstring[chordID]]
+			noteLowE.translation.y = string_coords[0]
+			noteLowE.get_child(0).set_text(str(actualChordLowEstring[chordID]))		
+			noteLowE.get_child(0).modulate = Color.red
+			noteLowE.get_child(0).get_child(1).outline_modulate = Color.red
+			add_child(noteLowE)
+		
+		if actualChordAstring[chordID] >= 0:
+			noteA = note.instance()
+			noteA.translation.x = fret_coords[actualChordAstring[chordID]]
+			noteA.translation.y = string_coords[1]
+			noteA.get_child(0).set_text(str(actualChordAstring[chordID]))
+			noteA.get_child(0).modulate = Color.yellow
+			noteA.get_child(0).get_child(1).outline_modulate = Color.yellow
+			add_child(noteA)
+		
+		if actualChordDstring[chordID] >= 0:
+			noteD = note.instance()
+			noteD.translation.x = fret_coords[actualChordDstring[chordID]]
+			noteD.translation.y = string_coords[2]
+			noteD.get_child(0).set_text(str(actualChordDstring[chordID]))
+			noteD.get_child(0).modulate = Color.cornflower
+			noteD.get_child(0).get_child(1).outline_modulate = Color.cornflower
+			add_child(noteD)
+		
+		if actualChordGstring[chordID] >= 0:
+			noteG = note.instance()
+			noteG.translation.x = fret_coords[actualChordGstring[chordID]]
+			noteG.translation.y = string_coords[3]
+			noteG.get_child(0).set_text(str(actualChordGstring[chordID]))
+			noteG.get_child(0).modulate = Color.orangered
+			noteG.get_child(0).get_child(1).outline_modulate = Color.orangered
+			add_child(noteG)
+		
+		if actualChordBstring[chordID] >= 0:
+			noteB = note.instance()
+			noteB.translation.x = fret_coords[actualChordBstring[chordID]]
+			noteB.translation.y = string_coords[4]
+			noteB.get_child(0).set_text(str(actualChordBstring[chordID]))
+			noteB.get_child(0).modulate = Color.green
+			noteB.get_child(0).get_child(1).outline_modulate = Color.green
+			add_child(noteB)
+		
+		if actualChordHighEstring[chordID] >= 0:
+			noteHighE = note.instance()
+			noteHighE.translation.x = fret_coords[actualChordHighEstring[chordID]]
+			noteHighE.translation.y = string_coords[5]
+			noteHighE.get_child(0).set_text(str(actualChordHighEstring[chordID]))
+			noteHighE.get_child(0).modulate = Color.purple
+			noteHighE.get_child(0).get_child(1).outline_modulate = Color.purple
+			add_child(noteHighE)
+		
+		if actualChordTimeArray[i] != null:
+			#print(i)
+			#print(actualChordTimeArray[i])
+			if i == 0:
+				yield(get_tree().create_timer(actualChordTimeArray[i]), "timeout")
+			else:
+				# TODO suppress error with the last field in ActualTimeArray
+				# it says that the field is null and crashes
+				var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
+				yield(get_tree().create_timer(targetTime), "timeout")
+		
+		
+		if noteLowE != null:
+			noteLowE.get_child(0).get_child(0).play("FallingAnimation")
+		
+		if noteA != null:
+			noteA.get_child(0).get_child(0).play("FallingAnimation")
+		
+		if noteD != null:
+			noteD.get_child(0).get_child(0).play("FallingAnimation")
+		
+		if noteG != null:
+			noteG.get_child(0).get_child(0).play("FallingAnimation")
+		
+		if noteB != null:
+			noteB.get_child(0).get_child(0).play("FallingAnimation")
+		
+		if noteHighE != null:
+			noteHighE.get_child(0).get_child(0).play("FallingAnimation")
+		
+	pass
+
+func trialCombineNoteData():
+	var combinedTimeArray = []
+	combinedTimeArray.append_array(actualTimeArray)
+	combinedTimeArray.append_array(actualChordTimeArray)
+	combinedTimeArray.sort()
+	#print(combinedTimeArray)
+	
+	for i in combinedTimeArray:
+	#	if combinedTimeArray[i].has():
+			#pass
+		pass
