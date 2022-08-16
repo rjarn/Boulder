@@ -9,4 +9,4 @@ problem 1 = fix the latency problem that individually acumulates as notes get sp
 problem 2 = fix the overall design (of notes/3D camera angle/etc) to improve visual clarity of the information.\n
 problem 3 = create a custom regex expression editor that saves expressions for each chart to guarantee a solution is accessible if the chart's data isn't in the             same format as other charts.\n
 problem 4 = figure out if the README.md is an appropiate location to place TODO items.
-problem 5 = figure out how to do line breaks in a README
+problem 5 = figure out how to do line breaks in a README.
