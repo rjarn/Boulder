@@ -27,7 +27,7 @@ tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
 "times": PoolRealArray( 0, 4 ),
-"transitions": PoolRealArray( 1.46408, 1 ),
+"transitions": PoolRealArray( 1.46408, 19.0273 ),
 "update": 0,
 "values": [ Color( 0.937255, 0.878431, 0, 0 ), Color( 1, 1, 1, 0.498039 ) ]
 }
@@ -38,7 +38,7 @@ tracks/2/loop_wrap = true
 tracks/2/imported = false
 tracks/2/enabled = true
 tracks/2/keys = {
-"times": PoolRealArray( 0, 1 ),
+"times": PoolRealArray( 0, 3.5 ),
 "transitions": PoolRealArray( 1, 1 ),
 "update": 1,
 "values": [ false, true ]
@@ -73,7 +73,7 @@ font = SubResource( 8 )
 
 [node name="LabelRect" type="Label3D" parent="."]
 modulate = Color( 1, 1, 1, 0.498039 )
-text = "[lmao]"
+text = "[hi]"
 font = SubResource( 3 )
 
 [connection signal="animation_finished" from="LabelNumber/AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

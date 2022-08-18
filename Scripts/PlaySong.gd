@@ -10,6 +10,7 @@ var fret_coords = [-5.0, -4.6, -4.2, -3.8, -3.4,
  1.0, 1.4, 1.8, 2.2, 2.6, 3.0, 3.4, 3.8, 4.2, 4.6]
 
 
+
 #array of coords for string numbers
 var string_coords = [-.5, -.3, -.1, .1, .3, .5]
 
@@ -19,6 +20,7 @@ var start_time
 
 var latency = 0.0
 var currentNote = 0
+var globalDelta = 0.0
 
 
 #???
@@ -41,33 +43,28 @@ var actualChordHighEstring = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	testChord()
+	#testChord()
 	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	
 	time = $AudioStreamPlayer.get_playback_position() + AudioServer.get_time_since_last_mix()
 	# Compensate for output latency.
 	time += AudioServer.get_output_latency()
-	#print("Time is: ", time)
+	#i do not know why the below options is more accurate than this
 	
-	time = time / 60000 
-	#time = time + _delta/60000
+	# This is okay, but not really passable for dealing with delay
+	
+	# I really have no idea why this is having the best results
+	# for making the latency match up with the song
 	if time > 0.0025:
 		# 0.003 was good but lagged at the end
 		#time = time - 0.003
 		time = fmod(time, 0.0025)
+		latency = time
 	
-	#if range(actualTimeArray.size()).has(currentNote):
-	if currentNote > 1:
-		if start_time != null:
-			latency = (Time.get_ticks_msec() / 1000.0 + actualTimeArray[currentNote]) - (start_time / 1000.0 + actualTimeArray[currentNote])
-			latency = latency / 60000 + time
-			latency = time
-			#latency = 0
-			#print(latency)
-			#print(time)
 	pass
 
 
@@ -97,7 +94,15 @@ func test_song():
 	
 	#start_time = OS.get_ticks_msec()
 	
-	for i in actualNoteArray.size():
+	#there is definitely a cleaner way to do this, but it works
+	var smallestSizeArray = actualNoteArray
+	if actualStringArray.size() < actualNoteArray.size():
+		smallestSizeArray = actualStringArray
+	if actualTimeArray.size() < smallestSizeArray.size():
+		smallestSizeArray = actualTimeArray
+	
+	
+	for i in smallestSizeArray.size():
 		
 		currentNote = i
 		
@@ -193,12 +198,14 @@ func test_song():
 		#TODO fix the thing that this is supposed to fix but doesnt
 		# when the last note is made, it says "invalid get index '3163' (on base: 'Array')
 		#even though i thought this would detect if it is null and stop
-		if actualTimeArray[i] != null:
+		if actualTimeArray[i]:
 			if i == 0:
-				yield(get_tree().create_timer(actualTimeArray[i]), "timeout")
+				print("Note latency = ", latency)
+				yield(get_tree().create_timer(actualTimeArray[i] - latency), "timeout")
 			else:
 				# TODO suppress error with the last field in ActualTimeArray
 				# it says that the field is null and crashes
+				print("Note latency = ", latency)
 				var targetTime = actualTimeArray[i] - actualTimeArray[i - 1]
 				yield(get_tree().create_timer(targetTime - latency), "timeout")
 		
@@ -638,12 +645,13 @@ func displayChords():
 			#print(i)
 			#print(actualChordTimeArray[i])
 			if i == 0:
-				yield(get_tree().create_timer(actualChordTimeArray[i]), "timeout")
+				yield(get_tree().create_timer(actualChordTimeArray[i] - latency), "timeout")
 			else:
 				# TODO suppress error with the last field in ActualTimeArray
 				# it says that the field is null and crashes
 				var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
-				yield(get_tree().create_timer(targetTime), "timeout")
+				print("Chord latency = ", latency)
+				yield(get_tree().create_timer(targetTime - latency), "timeout")
 		
 		
 		if noteLowE != null:
@@ -666,14 +674,3 @@ func displayChords():
 		
 	pass
 
-func trialCombineNoteData():
-	var combinedTimeArray = []
-	combinedTimeArray.append_array(actualTimeArray)
-	combinedTimeArray.append_array(actualChordTimeArray)
-	combinedTimeArray.sort()
-	#print(combinedTimeArray)
-	
-	for i in combinedTimeArray:
-	#	if combinedTimeArray[i].has():
-			#pass
-		pass
