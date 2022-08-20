@@ -59,8 +59,9 @@ func _process(_delta):
 	
 	# I really have no idea why this is having the best results
 	# for making the latency match up with the song
-	if time > 0.0025:
+	if time > 0.004:
 		# 0.003 was good but lagged at the end
+		
 		#time = time - 0.003
 		time = fmod(time, 0.0025)
 		latency = time
@@ -576,7 +577,10 @@ func displayChords():
 		var noteB = null
 		var noteHighE = null
 		
-		"""if actualChordTimeArray[i] != null:
+		# if this code is run at this position,
+		# the delay is increased by a large portion
+		"""
+		if actualChordTimeArray[i] != null:
 			print(i)
 			print(actualChordTimeArray[i])
 			if i == 0:
@@ -585,7 +589,8 @@ func displayChords():
 				# TODO suppress error with the last field in ActualTimeArray
 				# it says that the field is null and crashes
 				var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
-				yield(get_tree().create_timer(targetTime), "timeout")"""
+				yield(get_tree().create_timer(targetTime), "timeout")
+		"""
 		
 		if actualChordLowEstring[chordID] >= 0:
 			noteLowE = note.instance()
@@ -640,7 +645,8 @@ func displayChords():
 			noteHighE.get_child(0).modulate = Color.purple
 			noteHighE.get_child(0).get_child(1).outline_modulate = Color.purple
 			add_child(noteHighE)
-		
+	
+		#"""
 		if actualChordTimeArray[i] != null:
 			#print(i)
 			#print(actualChordTimeArray[i])
@@ -652,7 +658,7 @@ func displayChords():
 				var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
 				print("Chord latency = ", latency)
 				yield(get_tree().create_timer(targetTime - latency), "timeout")
-		
+		#"""
 		
 		if noteLowE != null:
 			noteLowE.get_child(0).get_child(0).play("FallingAnimation")
@@ -674,3 +680,19 @@ func displayChords():
 		
 	pass
 
+func makingTheNotesAllAtOnceInsteadOfAsTheSongProgresses():
+	# name is self explanitory
+	#instead of instanced notes being created as the song
+	# is progressing, create them all and have them invisible
+	# then begin the animations for the corresponding notes as needed
+	
+	# i am going to make 2 versions for both the chords and the notes
+	# because i haven't found an easy way to combine the 2 data 
+	# while making it easy to use it
+	# and they function independently anyways even though they 
+	# desync independently also 
+	
+	# WAIT I have version control now
+	# i can just fuck up the existing methods and revert it later
+	# ha
+	pass

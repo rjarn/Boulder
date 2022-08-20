@@ -5,6 +5,8 @@ extends Spatial
 # var a = 2
 # var b = "text"
 
+var animationStartTime= 0.0
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -15,6 +17,17 @@ func _ready():
 #func _process(delta):
 	#pass
 
+# these will be for the alternate method where 
+# the notes all get created, and then when they are
+# all dont, they will fire the animations based off 
+# of these values that are gotten from their respective
+# time arrays. 
+# TODO - shorten this explanation
+func set_animationStartTime(startTime):
+	animationStartTime = startTime
+
+func get_animationStartTime():
+	return animationStartTime
 
 func _on_AnimationPlayer_animation_finished(_anim_name):
 	
