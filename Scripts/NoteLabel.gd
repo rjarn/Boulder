@@ -5,7 +5,7 @@ extends Spatial
 # var a = 2
 # var b = "text"
 
-var animationStartTime= 0.0
+var animationStartTime = 0.0
 
 
 # Called when the node enters the scene tree for the first time.
@@ -23,6 +23,8 @@ func _ready():
 # of these values that are gotten from their respective
 # time arrays. 
 # TODO - shorten this explanation
+
+#I just realized I am mixing camelCase with underscores and I don't care
 func set_animationStartTime(startTime):
 	animationStartTime = startTime
 

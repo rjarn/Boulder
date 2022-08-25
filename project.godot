@@ -16,7 +16,6 @@ run/delta_smoothing=false
 
 [display]
 
-window/size/fullscreen=true
 window/vsync/use_vsync=false
 
 [gui]

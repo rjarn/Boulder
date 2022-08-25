@@ -41,8 +41,23 @@ var actualChordGstring = []
 var actualChordBstring = []
 var actualChordHighEstring = []
 
+var noteNodeArray = []
+
+#testing for debug related crashes
+var array500 = []
+var array1000 = []
+var array1500 = []
+var array2000 = []
+var array2500 = []
+var array3000 = []
+var array3500 = []
+
+var chordNodeArray = []
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	# this prints, but the other one on the button doesn't
+	print("hi")
 	#testChord()
 	pass # Replace with function body.
 
@@ -70,16 +85,23 @@ func _process(_delta):
 
 
 func _on_Button_pressed():
+	# this is to test how everything functions so it will
+	# have a lot of commented out methods
+	
 	#parse_xml_charts_with_regex()
+	
+	# With the current problem where godot crashes with no message,
+	# this print message doesn't even come out
+	# even though none of the operations happen until these 2 
+	# following methods
+	print("crash")
+	
 	betterRegexMethod()
 	test_song()
-	displayChords()
+	#launchNotes()
+	#displayChords()
 	#trialCombineNoteData()
 	#print(actualChordTimeArray)
-	#var newNote = note.instance()
-	#add_child(newNote)
-	#newNote.translation = Vector3(3, -.3, 0)
-	#newNote.get_child(0).get_child(0).play("FallingAnimation")
 	pass # Replace with function body.
 
 func test_song():
@@ -102,8 +124,21 @@ func test_song():
 	if actualTimeArray.size() < smallestSizeArray.size():
 		smallestSizeArray = actualTimeArray
 	
-	
+	#below is the actual intended code
 	for i in smallestSizeArray.size():
+	#for i in 1000:
+	
+		#if i % 500 == 0:
+			#yield(get_tree().create_timer(5),"timeout")
+	# THIS IS THE BUG
+	# THE BUG IS HERE
+	# i haven't figured out the exact number, but it crashes
+	# with the debug version of the game at some value between
+	# 2000 and 3000, and my song has over 3k notes
+	# *** if the game is exported without debug capabilities,
+	# it doesn't crash
+	#for i in 2001:
+		
 		
 		currentNote = i
 		
@@ -114,6 +149,7 @@ func test_song():
 		#add_child(newNote)
 		
 		#map fret's locations from data
+		# i know this looks bad
 		if actualNoteArray[i] == 0:
 			newNote.translation.x = fret_coords[0]
 		elif actualNoteArray[i] == 1:
@@ -193,9 +229,48 @@ func test_song():
 		
 		
 		newNote.get_child(0).set_text(str(actualNoteArray[i]))
+		newNote.visible = false
+		
+		if i == 0:
+			newNote.set_animationStartTime(actualTimeArray[i])
+		else:
+			newNote.set_animationStartTime(actualTimeArray[i] - actualTimeArray[i - 1])
+		
+		# its not even adding them to the scene, its just crashing because of this
+		# the crash only happens when running through the editor
+		# when it exports, the same crashes don't happen
+		noteNodeArray.append(newNote)
+		print(i)
+		
+		#test
+		# this doesn't solve the debug enabled version from disappearing
+#		if i < 500:
+#			array500.append(newNote)
+#		elif i < 1000:
+#			array1000.append(newNote)
+#		elif i < 1500:
+#			array1500.append(newNote)
+#		elif i < 2000:
+#			array2000.append(newNote)
+#		elif i < 2500:
+#			array2500.append(newNote)
+#		elif i < 3000:
+#			array3000.append(newNote)
+#		elif i < 3500:
+#			array3500.append(newNote)
+		
+		add_child(newNote)
+		
+		# end code here
+		# to separate the creation of the nodes with the 
+		# playback of the nodes to not introduce as much latency
+		
+		# idk if this does what I want it to do, but I'm about to
+		# break
+		# jk it doesn't do what i want it to do
 		
 		
-		
+		"""
 		#TODO fix the thing that this is supposed to fix but doesnt
 		# when the last note is made, it says "invalid get index '3163' (on base: 'Array')
 		#even though i thought this would detect if it is null and stop
@@ -211,7 +286,7 @@ func test_song():
 				yield(get_tree().create_timer(targetTime - latency), "timeout")
 		
 		#print(time)
-		add_child(newNote)
+		#add_child(newNote)
 		
 		
 		if !($AudioStreamPlayer.playing):
@@ -221,8 +296,9 @@ func test_song():
 		
 		
 		newNote.get_child(0).get_child(0).play("FallingAnimation")
+		"""
 		
-		
+	launchNotes()
 func parse_xml_charts_with_regex():
 	
 	# WARNING: I DON'T KNOW REGEX
@@ -680,19 +756,33 @@ func displayChords():
 		
 	pass
 
-func makingTheNotesAllAtOnceInsteadOfAsTheSongProgresses():
-	# name is self explanitory
-	#instead of instanced notes being created as the song
-	# is progressing, create them all and have them invisible
-	# then begin the animations for the corresponding notes as needed
+func launchNotes():
+	# OKAY so the entire game crashes without giving an error message
+	# when I have it set this way to create the children and add them
+	# while I use this portion to start the song and the notes.
 	
-	# i am going to make 2 versions for both the chords and the notes
-	# because i haven't found an easy way to combine the 2 data 
-	# while making it easy to use it
-	# and they function independently anyways even though they 
-	# desync independently also 
+	# The entire game just disappears and godot has no error message visible.
+	# My guess is that it's related to 3.1k nodes being created and added
+	# at the same time. So I am going to add them to the scene as time passes
+	# but they will have all their information hopefully stored.
+	# yolo
 	
-	# WAIT I have version control now
-	# i can just fuck up the existing methods and revert it later
-	# ha
+	# nope, still crashes. next up is changing the getter method to a simple variable
+	# that didn't work either
+	
+	#the only thing that changed is that I have a new array of "Note" nodes
+	#and that they all get created first, and then I reference them later
+	#as the song progresses.
+	
+	
+	#$AudioStreamPlayer.play()
+	
+	for i in noteNodeArray.size():
+		#add_child(noteNodeArray[i])
+		yield(get_tree().create_timer(noteNodeArray[i].get_animationStartTime() - latency),"timeout")
+		noteNodeArray[i].visible = true
+		if !($AudioStreamPlayer.playing):
+			$AudioStreamPlayer.play()
+		noteNodeArray[i].get_child(0).get_child(0).play("FallingAnimation")
+		pass
 	pass
