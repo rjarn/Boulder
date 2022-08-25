@@ -55,6 +55,7 @@ size = 19
 font_data = ExtResource( 1 )
 
 [node name="NoteLabel" type="Spatial"]
+visible = false
 script = ExtResource( 2 )
 
 [node name="LabelNumber" type="Label3D" parent="."]

@@ -74,11 +74,11 @@ func _process(_delta):
 	
 	# I really have no idea why this is having the best results
 	# for making the latency match up with the song
-	if time > 0.004:
+	if time > 0.0032:
 		# 0.003 was good but lagged at the end
 		
 		#time = time - 0.003
-		time = fmod(time, 0.0025)
+		time = fmod(time, 0.0032)
 		latency = time
 	
 	pass
@@ -99,7 +99,7 @@ func _on_Button_pressed():
 	betterRegexMethod()
 	test_song()
 	#launchNotes()
-	#displayChords()
+	displayChords()
 	#trialCombineNoteData()
 	#print(actualChordTimeArray)
 	pass # Replace with function body.
@@ -231,16 +231,16 @@ func test_song():
 		newNote.get_child(0).set_text(str(actualNoteArray[i]))
 		newNote.visible = false
 		
-		if i == 0:
-			newNote.set_animationStartTime(actualTimeArray[i])
-		else:
-			newNote.set_animationStartTime(actualTimeArray[i] - actualTimeArray[i - 1])
+		#if i == 0:
+			#newNote.set_animationStartTime(actualTimeArray[i])
+		#else:
+			#newNote.set_animationStartTime(actualTimeArray[i] - actualTimeArray[i - 1])
 		
 		# its not even adding them to the scene, its just crashing because of this
 		# the crash only happens when running through the editor
 		# when it exports, the same crashes don't happen
-		noteNodeArray.append(newNote)
-		print(i)
+		#noteNodeArray.append(newNote)
+		#print(i)
 		
 		#test
 		# this doesn't solve the debug enabled version from disappearing
@@ -270,7 +270,7 @@ func test_song():
 		# jk it doesn't do what i want it to do
 		
 		
-		"""
+		
 		#TODO fix the thing that this is supposed to fix but doesnt
 		# when the last note is made, it says "invalid get index '3163' (on base: 'Array')
 		#even though i thought this would detect if it is null and stop
@@ -296,7 +296,7 @@ func test_song():
 		
 		
 		newNote.get_child(0).get_child(0).play("FallingAnimation")
-		"""
+		newNote.visible = true
 		
 	launchNotes()
 func parse_xml_charts_with_regex():
@@ -675,6 +675,7 @@ func displayChords():
 			noteLowE.get_child(0).set_text(str(actualChordLowEstring[chordID]))		
 			noteLowE.get_child(0).modulate = Color.red
 			noteLowE.get_child(0).get_child(1).outline_modulate = Color.red
+			noteLowE.visible = false
 			add_child(noteLowE)
 		
 		if actualChordAstring[chordID] >= 0:
@@ -684,6 +685,7 @@ func displayChords():
 			noteA.get_child(0).set_text(str(actualChordAstring[chordID]))
 			noteA.get_child(0).modulate = Color.yellow
 			noteA.get_child(0).get_child(1).outline_modulate = Color.yellow
+			noteA.visible = false
 			add_child(noteA)
 		
 		if actualChordDstring[chordID] >= 0:
@@ -693,6 +695,7 @@ func displayChords():
 			noteD.get_child(0).set_text(str(actualChordDstring[chordID]))
 			noteD.get_child(0).modulate = Color.cornflower
 			noteD.get_child(0).get_child(1).outline_modulate = Color.cornflower
+			noteD.visible = false
 			add_child(noteD)
 		
 		if actualChordGstring[chordID] >= 0:
@@ -702,6 +705,7 @@ func displayChords():
 			noteG.get_child(0).set_text(str(actualChordGstring[chordID]))
 			noteG.get_child(0).modulate = Color.orangered
 			noteG.get_child(0).get_child(1).outline_modulate = Color.orangered
+			noteG.visible = false
 			add_child(noteG)
 		
 		if actualChordBstring[chordID] >= 0:
@@ -711,6 +715,7 @@ func displayChords():
 			noteB.get_child(0).set_text(str(actualChordBstring[chordID]))
 			noteB.get_child(0).modulate = Color.green
 			noteB.get_child(0).get_child(1).outline_modulate = Color.green
+			noteB.visible = false
 			add_child(noteB)
 		
 		if actualChordHighEstring[chordID] >= 0:
@@ -720,6 +725,7 @@ func displayChords():
 			noteHighE.get_child(0).set_text(str(actualChordHighEstring[chordID]))
 			noteHighE.get_child(0).modulate = Color.purple
 			noteHighE.get_child(0).get_child(1).outline_modulate = Color.purple
+			noteHighE.visible = false
 			add_child(noteHighE)
 	
 		#"""
@@ -738,21 +744,28 @@ func displayChords():
 		
 		if noteLowE != null:
 			noteLowE.get_child(0).get_child(0).play("FallingAnimation")
+			noteLowE.visible = true
 		
 		if noteA != null:
 			noteA.get_child(0).get_child(0).play("FallingAnimation")
+			noteA.visible = true
 		
 		if noteD != null:
 			noteD.get_child(0).get_child(0).play("FallingAnimation")
+			noteD.visible = true
 		
 		if noteG != null:
 			noteG.get_child(0).get_child(0).play("FallingAnimation")
+			noteG.visible = true
 		
 		if noteB != null:
 			noteB.get_child(0).get_child(0).play("FallingAnimation")
+			noteB.visible = true	
 		
 		if noteHighE != null:
 			noteHighE.get_child(0).get_child(0).play("FallingAnimation")
+			noteHighE.visible = true
+		
 		
 	pass
 
