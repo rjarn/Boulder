@@ -57,7 +57,7 @@ var chordNodeArray = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# this prints, but the other one on the button doesn't
-	print("hi")
+	#print("hi")
 	#testChord()
 	pass # Replace with function body.
 
@@ -68,17 +68,22 @@ func _process(_delta):
 	time = $AudioStreamPlayer.get_playback_position() + AudioServer.get_time_since_last_mix()
 	# Compensate for output latency.
 	time += AudioServer.get_output_latency()
+	
+	#yolo
+	# lower dividend = faster note arrival times
+	# higher divident = slower note arrival times
+	#latency = time/600000
 	#i do not know why the below options is more accurate than this
 	
 	# This is okay, but not really passable for dealing with delay
 	
 	# I really have no idea why this is having the best results
 	# for making the latency match up with the song
-	if time > 0.0032:
+	if time > 0.003:
 		# 0.003 was good but lagged at the end
 		
 		#time = time - 0.003
-		time = fmod(time, 0.0032)
+		time = fmod(time, 0.003)
 		latency = time
 	
 	pass
@@ -90,12 +95,7 @@ func _on_Button_pressed():
 	
 	#parse_xml_charts_with_regex()
 	
-	# With the current problem where godot crashes with no message,
-	# this print message doesn't even come out
-	# even though none of the operations happen until these 2 
-	# following methods
-	print("crash")
-	
+		
 	betterRegexMethod()
 	test_song()
 	#launchNotes()
@@ -126,18 +126,6 @@ func test_song():
 	
 	#below is the actual intended code
 	for i in smallestSizeArray.size():
-	#for i in 1000:
-	
-		#if i % 500 == 0:
-			#yield(get_tree().create_timer(5),"timeout")
-	# THIS IS THE BUG
-	# THE BUG IS HERE
-	# i haven't figured out the exact number, but it crashes
-	# with the debug version of the game at some value between
-	# 2000 and 3000, and my song has over 3k notes
-	# *** if the game is exported without debug capabilities,
-	# it doesn't crash
-	#for i in 2001:
 		
 		
 		currentNote = i
@@ -236,28 +224,8 @@ func test_song():
 		#else:
 			#newNote.set_animationStartTime(actualTimeArray[i] - actualTimeArray[i - 1])
 		
-		# its not even adding them to the scene, its just crashing because of this
-		# the crash only happens when running through the editor
-		# when it exports, the same crashes don't happen
-		#noteNodeArray.append(newNote)
-		#print(i)
 		
-		#test
-		# this doesn't solve the debug enabled version from disappearing
-#		if i < 500:
-#			array500.append(newNote)
-#		elif i < 1000:
-#			array1000.append(newNote)
-#		elif i < 1500:
-#			array1500.append(newNote)
-#		elif i < 2000:
-#			array2000.append(newNote)
-#		elif i < 2500:
-#			array2500.append(newNote)
-#		elif i < 3000:
-#			array3000.append(newNote)
-#		elif i < 3500:
-#			array3500.append(newNote)
+		
 		
 		add_child(newNote)
 		
@@ -265,16 +233,11 @@ func test_song():
 		# to separate the creation of the nodes with the 
 		# playback of the nodes to not introduce as much latency
 		
-		# idk if this does what I want it to do, but I'm about to
-		# break
-		# jk it doesn't do what i want it to do
-		
-		
 		
 		#TODO fix the thing that this is supposed to fix but doesnt
 		# when the last note is made, it says "invalid get index '3163' (on base: 'Array')
 		#even though i thought this would detect if it is null and stop
-		if actualTimeArray[i]:
+		if actualTimeArray[i] != null:
 			if i == 0:
 				print("Note latency = ", latency)
 				yield(get_tree().create_timer(actualTimeArray[i] - latency), "timeout")
@@ -733,12 +696,15 @@ func displayChords():
 			#print(i)
 			#print(actualChordTimeArray[i])
 			if i == 0:
+				# this line desyncs the arrival time of the chords from the notes
+				# ie. if the notes are generated with a delay, this won't use any of that offset info
+				# however, the arrival time of the first chord isn't laggy for some reason
 				yield(get_tree().create_timer(actualChordTimeArray[i] - latency), "timeout")
 			else:
 				# TODO suppress error with the last field in ActualTimeArray
 				# it says that the field is null and crashes
 				var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
-				print("Chord latency = ", latency)
+				#print("Chord latency = ", latency)
 				yield(get_tree().create_timer(targetTime - latency), "timeout")
 		#"""
 		
@@ -770,22 +736,12 @@ func displayChords():
 	pass
 
 func launchNotes():
-	# OKAY so the entire game crashes without giving an error message
-	# when I have it set this way to create the children and add them
-	# while I use this portion to start the song and the notes.
+	# -- Ignore this --
 	
-	# The entire game just disappears and godot has no error message visible.
-	# My guess is that it's related to 3.1k nodes being created and added
-	# at the same time. So I am going to add them to the scene as time passes
-	# but they will have all their information hopefully stored.
-	# yolo
-	
-	# nope, still crashes. next up is changing the getter method to a simple variable
-	# that didn't work either
-	
-	#the only thing that changed is that I have a new array of "Note" nodes
-	#and that they all get created first, and then I reference them later
-	#as the song progresses.
+	# This method plays all the previously created nodes
+	# instead of playing them as they are created.
+	# It didn't noticably improve latency, but I am keeping
+	# it for now.
 	
 	
 	#$AudioStreamPlayer.play()
@@ -798,4 +754,15 @@ func launchNotes():
 			$AudioStreamPlayer.play()
 		noteNodeArray[i].get_child(0).get_child(0).play("FallingAnimation")
 		pass
+	pass
+
+func testAudioStreamGenerator():
+	# Testing functionality of AudioStreamGenerator
+	# and AudioStreamPlayback
+	# -- relevant urls : 
+	#  .  https://github.com/godotengine/godot/issues/32382
+	#  .  https://github.com/godotengine/godot-demo-projects/blob/3.4-b0d4a7c/audio/generator/generator_demo.gd
+	#  .  https://godotengine.org/article/godot-32-will-get-new-audio-features
+	
+	#AudioStreamGenerator
 	pass
