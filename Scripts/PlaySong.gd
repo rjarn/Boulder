@@ -17,6 +17,8 @@ var string_coords = [-.5, -.3, -.1, .1, .3, .5]
 #track starting point for elapsed time
 var start_time
 
+var chord_start_time
+
 
 var latency = 0.0
 var currentNote = 0
@@ -54,6 +56,11 @@ var array3500 = []
 
 var chordNodeArray = []
 
+var timeToNextMix
+
+var previousNoteTime
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# this prints, but the other one on the button doesn't
@@ -67,7 +74,17 @@ func _process(_delta):
 	
 	time = $AudioStreamPlayer.get_playback_position() + AudioServer.get_time_since_last_mix()
 	# Compensate for output latency.
+	
+	#print("TIME: ", time)
+	# This is from the docs, but I don't think it ever 
+	# gets a value other than 0
 	time += AudioServer.get_output_latency()
+	
+	
+	
+	#timeToNextMix = AudioServer.get_time_to_next_mix()
+	#print("GTTNM: ", timeToNextMix)
+	#print("GOL:", AudioServer.get_output_latency())
 	
 	#yolo
 	# lower dividend = faster note arrival times
@@ -239,14 +256,33 @@ func test_song():
 		#even though i thought this would detect if it is null and stop
 		if actualTimeArray[i] != null:
 			if i == 0:
-				print("Note latency = ", latency)
-				yield(get_tree().create_timer(actualTimeArray[i] - latency), "timeout")
+				start_time = $AudioStreamPlayer.get_playback_position()
+				#yield(get_tree().create_timer(actualTimeArray[i] - latency), "timeout")
+				yield(get_tree().create_timer(actualTimeArray[i]), "timeout")
 			else:
-				# TODO suppress error with the last field in ActualTimeArray
-				# it says that the field is null and crashes
-				print("Note latency = ", latency)
+				# this is an absolute mess, but when it works, it needs to be replicated with the chords 
+				# right now, this portion only works with individual notes
+				
+				#print("Note latency = ", latency)
+				#print("Current Time? = ", $AudioStreamPlayer.get_playback_position())
+				#print("Target time? = ", actualTimeArray[i] - actualTimeArray[i - 1])
+				
+				# actual holder for upcoming note start time
+				# this is the original correct version
 				var targetTime = actualTimeArray[i] - actualTimeArray[i - 1]
-				yield(get_tree().create_timer(targetTime - latency), "timeout")
+				
+				# test at calculating latency based off of times that should be the same but aren't
+				# this gets applied below in the yield function
+				var testLatency = (start_time + actualTimeArray[i]) - (start_time + $AudioStreamPlayer.get_playback_position())
+				#print(testLatency)
+				
+				
+				#yield(get_tree().create_timer(targetTime - latency), "timeout")
+				
+				# lower dividend = faster notes, higher dividend = slower notes
+				# need to figure out the logic behind needing to divide this, because I have no idea
+				# 2750 is the right number (at least for this 15 minute song)
+				yield(get_tree().create_timer(targetTime-testLatency/2750), "timeout")
 		
 		#print(time)
 		#add_child(newNote)
@@ -261,7 +297,7 @@ func test_song():
 		newNote.get_child(0).get_child(0).play("FallingAnimation")
 		newNote.visible = true
 		
-	launchNotes()
+	#launchNotes()
 func parse_xml_charts_with_regex():
 	
 	# WARNING: I DON'T KNOW REGEX
@@ -699,13 +735,19 @@ func displayChords():
 				# this line desyncs the arrival time of the chords from the notes
 				# ie. if the notes are generated with a delay, this won't use any of that offset info
 				# however, the arrival time of the first chord isn't laggy for some reason
-				yield(get_tree().create_timer(actualChordTimeArray[i] - latency), "timeout")
+				#chord_start_time = $AudioStreamPlayer.get_playback_position()
+				yield(get_tree().create_timer(actualChordTimeArray[i]), "timeout")
 			else:
 				# TODO suppress error with the last field in ActualTimeArray
 				# it says that the field is null and crashes
-				var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
+				#var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
 				#print("Chord latency = ", latency)
-				yield(get_tree().create_timer(targetTime - latency), "timeout")
+				#yield(get_tree().create_timer(targetTime - latency), "timeout")
+				
+				# chords still have lag and I have no idea how
+				var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
+				var testLatency = (start_time + actualChordTimeArray[i]) - (start_time + $AudioStreamPlayer.get_playback_position())
+				yield(get_tree().create_timer(targetTime-testLatency/2750), "timeout")
 		#"""
 		
 		if noteLowE != null:
@@ -766,3 +808,4 @@ func testAudioStreamGenerator():
 	
 	#AudioStreamGenerator
 	pass
+
