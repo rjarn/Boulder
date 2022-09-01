@@ -14,6 +14,10 @@ config/name="Boulder5"
 run/main_scene="res://Scenes/PlaySong.tscn"
 run/delta_smoothing=false
 
+[autoload]
+
+AutoloadSongInfo="*res://Scripts/AutoloadSongInfo.gd"
+
 [display]
 
 window/vsync/use_vsync=false

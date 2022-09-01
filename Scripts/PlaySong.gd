@@ -3,6 +3,8 @@ extends Spatial
 #instanced note art/animation for each note from song
 var note = preload("res://Scenes/NoteLabel.tscn")
 
+var hardcodedSongChartPath = "res://Songcharts/btbamwhitewallsalb11_lead.xml"
+var hardcodedSongAudioPath = "res://SongAudio/song_btbamwhitewallsalb11_fixed.ogg"
 
 #array of coords for fret numbers
 var fret_coords = [-5.0, -4.6, -4.2, -3.8, -3.4, 
@@ -66,6 +68,11 @@ func _ready():
 	# this prints, but the other one on the button doesn't
 	#print("hi")
 	#testChord()
+	#$Label.text = AutoloadSongInfo.currentSong
+	#$Label2.text = AutoloadSongInfo.currentAudio
+	
+	#var song = file.open(str("res://SongAudio/", AutoloadSongInfo.currentAudio), 1)
+	$AudioStreamPlayer.stream = load(AutoloadSongInfo.currentAudio)
 	pass # Replace with function body.
 
 
@@ -504,7 +511,9 @@ func betterRegexMethod():
 	#     and regex statement executions
 	
 	var file = File.new()
-	file.open("res://Songcharts/btbamwhitewallsalb11_lead.xml", 1)
+	#file.open("res://Songcharts/btbamwhitewallsalb11_lead.xml", 1)
+	file.open(hardcodedSongChartPath, 1)
+	#file.open(AutoloadSongInfo.currentSong, 1)
 	
 	var wholeFile = file.get_as_text()
 	
@@ -809,3 +818,8 @@ func testAudioStreamGenerator():
 	#AudioStreamGenerator
 	pass
 
+
+
+func _on_SelectSongButton_pressed():
+	get_tree().change_scene("res://Scenes/SelectSong.tscn")
+	pass # Replace with function body.

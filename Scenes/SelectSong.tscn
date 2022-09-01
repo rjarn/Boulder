@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scripts/SelectSong.gd" type="Script" id=1]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="HBox" type="HBoxContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="BackButton" type="Button" parent="HBox"]
+margin_right = 135.0
+margin_bottom = 40.0
+text = "Back to song scene"
+
+[node name="ChartVBox" type="VBoxContainer" parent="HBox"]
+margin_left = 139.0
+margin_right = 139.0
+margin_bottom = 40.0
+
+[node name="AudioVBox" type="VBoxContainer" parent="HBox"]
+margin_left = 143.0
+margin_right = 143.0
+margin_bottom = 40.0
+
+[connection signal="pressed" from="HBox/BackButton" to="." method="_on_BackButton_pressed"]

@@ -19,10 +19,34 @@ current = true
 [node name="Button" type="Button" parent="."]
 margin_right = 130.0
 margin_bottom = 77.0
-text = "test"
+text = "play song"
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 3 )
 volume_db = -20.101
 
+[node name="SelectSongButton" type="Button" parent="."]
+margin_left = 155.0
+margin_top = 4.0
+margin_right = 261.0
+margin_bottom = 80.0
+text = "Select Song"
+
+[node name="Label" type="Label" parent="."]
+margin_left = 295.0
+margin_top = 10.0
+margin_right = 391.0
+margin_bottom = 38.0
+rect_scale = Vector2( 3.36, 1 )
+text = "gesgesge"
+
+[node name="Label2" type="Label" parent="."]
+margin_left = 30.0
+margin_top = 106.0
+margin_right = 83.0
+margin_bottom = 128.0
+rect_scale = Vector2( 4.90665, 5.76537 )
+text = "ssfsdf"
+
 [connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]
+[connection signal="pressed" from="SelectSongButton" to="." method="_on_SelectSongButton_pressed"]
