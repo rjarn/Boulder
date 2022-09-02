@@ -72,7 +72,9 @@ func _ready():
 	#$Label2.text = AutoloadSongInfo.currentAudio
 	
 	#var song = file.open(str("res://SongAudio/", AutoloadSongInfo.currentAudio), 1)
-	$AudioStreamPlayer.stream = load(AutoloadSongInfo.currentAudio)
+	
+	$AudioStreamPlayer.stream = load(str(AutoloadSongInfo.currentAudio))
+	
 	pass # Replace with function body.
 
 
@@ -512,8 +514,8 @@ func betterRegexMethod():
 	
 	var file = File.new()
 	#file.open("res://Songcharts/btbamwhitewallsalb11_lead.xml", 1)
-	file.open(hardcodedSongChartPath, 1)
-	#file.open(AutoloadSongInfo.currentSong, 1)
+	#file.open(hardcodedSongChartPath, 1)
+	file.open(str(AutoloadSongInfo.currentSong), 1)
 	
 	var wholeFile = file.get_as_text()
 	

@@ -16,12 +16,26 @@ text = "Back to song scene"
 
 [node name="ChartVBox" type="VBoxContainer" parent="HBox"]
 margin_left = 139.0
-margin_right = 139.0
+margin_right = 212.0
 margin_bottom = 40.0
 
+[node name="Label" type="Label" parent="HBox/ChartVBox"]
+margin_right = 73.0
+margin_bottom = 14.0
+text = "Song charts"
+align = 1
+valign = 1
+
 [node name="AudioVBox" type="VBoxContainer" parent="HBox"]
-margin_left = 143.0
-margin_right = 143.0
+margin_left = 216.0
+margin_right = 287.0
 margin_bottom = 40.0
+
+[node name="Label" type="Label" parent="HBox/AudioVBox"]
+margin_right = 71.0
+margin_bottom = 14.0
+text = "Audio Files"
+align = 1
+valign = 1
 
 [connection signal="pressed" from="HBox/BackButton" to="." method="_on_BackButton_pressed"]

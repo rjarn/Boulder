@@ -74,14 +74,14 @@ func createSongSelectionButtons():
 func _chart_button_pressed():
 	for i in chartButtonArray.size():
 		if chartButtonArray[i].is_pressed():
-			AutoloadSongInfo.currentSong = chartButtonArray[i]
+			AutoloadSongInfo.currentSong = str("res://SongCharts/", songChartArray[i])
 			print("fart")
 	pass
 
 func _audio_button_pressed():
 	for i in audioButtonArray.size():
 		if audioButtonArray[i].is_pressed():
-			AutoloadSongInfo.currentAudio = audioButtonArray[i]
+			AutoloadSongInfo.currentAudio = str("res://SongAudio/", songAudioArray[i])
 			print("i have gas")
 
 func _on_BackButton_pressed():
