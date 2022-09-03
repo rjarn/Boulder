@@ -33,6 +33,7 @@ margin_bottom = 80.0
 text = "Select Song"
 
 [node name="Label" type="Label" parent="."]
+visible = false
 margin_left = 295.0
 margin_top = 10.0
 margin_right = 391.0
@@ -41,6 +42,7 @@ rect_scale = Vector2( 3.36, 1 )
 text = "gesgesge"
 
 [node name="Label2" type="Label" parent="."]
+visible = false
 margin_left = 30.0
 margin_top = 106.0
 margin_right = 83.0

@@ -75,14 +75,12 @@ func _chart_button_pressed():
 	for i in chartButtonArray.size():
 		if chartButtonArray[i].is_pressed():
 			AutoloadSongInfo.currentSong = str("res://SongCharts/", songChartArray[i])
-			print("fart")
 	pass
 
 func _audio_button_pressed():
 	for i in audioButtonArray.size():
 		if audioButtonArray[i].is_pressed():
 			AutoloadSongInfo.currentAudio = str("res://SongAudio/", songAudioArray[i])
-			print("i have gas")
 
 func _on_BackButton_pressed():
 	get_tree().change_scene("res://Scenes/PlaySong.tscn")
