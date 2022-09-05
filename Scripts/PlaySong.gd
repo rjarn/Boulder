@@ -463,8 +463,17 @@ func betterRegexMethod():
 	
 	# grabs the target difficulty section only to parse through
 	# level difficulty sections might be related to dynamic difficulty
-	# -- Begin grabbing individual note data --
+	# -- todo --
+	# use If statement to get the largest note portion of the file
+	# ie. if there are two groupings of notes:
+	#     first grouping = level difficulty 5 note count 274
+	#     second grouping = level difficulty 3 note count 163
+	# *** it will select the larger of the two
+	# the important relevant tag is <notes count="274">
 	var try4 = "(?=level difficulty=\"0\")[\\s\\S]*(?=</level>)"
+	
+	# -- Begin grabbing individual note data --
+	
 	
 	# grabs note fret location from section
 	var try5 = "(?<=fret=\")(.*?)(?=\")"
