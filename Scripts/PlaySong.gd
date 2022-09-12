@@ -3,8 +3,11 @@ extends Spatial
 #instanced note art/animation for each note from song
 var note = preload("res://Scenes/NoteLabel.tscn")
 
+
 var hardcodedSongChartPath = "res://Songcharts/btbamwhitewallsalb11_lead.xml"
 var hardcodedSongAudioPath = "res://SongAudio/song_btbamwhitewallsalb11_fixed.ogg"
+var hardcodedAALSongPath = "res://SongCharts/cusaalpointtopoint_lead.xml"
+var hardcodedAALAudioPath = "res://SongAudio/song_cusaalpointtopoint_fixed.ogg"
 
 #array of coords for fret numbers
 var fret_coords = [-5.0, -4.6, -4.2, -3.8, -3.4, 
@@ -73,7 +76,8 @@ func _ready():
 	
 	#var song = file.open(str("res://SongAudio/", AutoloadSongInfo.currentAudio), 1)
 	
-	$AudioStreamPlayer.stream = load(str(AutoloadSongInfo.currentAudio))
+	#$AudioStreamPlayer.stream = load(str(AutoloadSongInfo.currentAudio))
+	#$AudioStreamPlayer.stream = load(hardcodedAALAudioPath)
 	
 	pass # Replace with function body.
 
@@ -470,8 +474,13 @@ func betterRegexMethod():
 	#     second grouping = level difficulty 3 note count 163
 	# *** it will select the larger of the two
 	# the important relevant tag is <notes count="274">
-	var try4 = "(?=level difficulty=\"0\")[\\s\\S]*(?=</level>)"
 	
+	# (?<=notes count=)*(?=<\/notes>) test but doesnt work
+	# still wip
+	
+	var try4 = "(?=level difficulty=\"0\")[\\s\\S]*(?=</level>)"
+	#var try4 = "(?=level difficulty=\"6\")[\\s\\S]*(?=</level>)"
+	#var try4 = "/<notes count=\"293\">(.*?)<\/notes>/sg"
 	# -- Begin grabbing individual note data --
 	
 	
@@ -522,9 +531,13 @@ func betterRegexMethod():
 	#     and regex statement executions
 	
 	var file = File.new()
-	#file.open("res://Songcharts/btbamwhitewallsalb11_lead.xml", 1)
+	file.open("res://Songcharts/btbamwhitewallsalb11_lead.xml", 1)
 	#file.open(hardcodedSongChartPath, 1)
-	file.open(str(AutoloadSongInfo.currentSong), 1)
+	#file.open(hardcodedAALSongPath, 1)
+	#file.open("res://Songcharts/cusaalpointtopoint_lead.xml", 1)
+	
+	#below is what should work but doesn't
+	#file.open(str(AutoloadSongInfo.currentSong), 1)
 	
 	var wholeFile = file.get_as_text()
 	
@@ -832,5 +845,9 @@ func testAudioStreamGenerator():
 
 
 func _on_SelectSongButton_pressed():
-	get_tree().change_scene("res://Scenes/SelectSong.tscn")
+	#disabled because of problems loading new non hardcoded files
+	#and also because there is a bigger problem of figuring out
+	#how other charts have the important information to gather
+	#it is very all over the place and inconsistent
+	#get_tree().change_scene("res://Scenes/SelectSong.tscn")
 	pass # Replace with function body.
