@@ -487,8 +487,8 @@ func betterRegexMethod():
 	# (?<=notes count=)*(?=<\/notes>) test but doesnt work
 	# still wip
 	
-	#var try4 = "(?=level difficulty=\"0\")[\\s\\S]*(?=</level>)"
-	var try4 = "(?=level difficulty=\"6\")[\\s\\S]*(?=</level>)"
+	var try4 = "(?=level difficulty=\"0\")[\\s\\S]*(?=</level>)"
+	#var try4 = "(?=level difficulty=\"3\")[\\s\\S]*(?=</level>)"
 	#var try4 = "/<notes count=\"293\">(.*?)<\/notes>/sg"
 	# -- Begin grabbing individual note data --
 	

@@ -1,7 +1,7 @@
 extends Node
 
 # Holds path to selected song chart from res/SongCharts folder
-var currentSong = "res://SongChart/btbamwhitewallsalb11_lead"
+var currentSong = "res://SongCharts/btbamwhitewallsalb11_lead.xml"
 
 # Holds path to selected song  audio from res/SongAudio folder
 var currentAudio = "res://SongAudio/song_btbamwhitewallsalb11_fixed.ogg"
