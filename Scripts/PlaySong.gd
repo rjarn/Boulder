@@ -94,13 +94,18 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	
-	time = $AudioStreamPlayer.get_playback_position() + AudioServer.get_time_since_last_mix()
+	# Revision 2/9/23 -- to undo, uncomment lines that are commented with "TEST 1" at the start
+	# Lowered audio latency setting to 0 (for both versions including HTML5)
+	# latency is improved, but chords are unusually out of sync
+	# and the non chord notes are much better
+	
+	#TEST 1time = $AudioStreamPlayer.get_playback_position() + AudioServer.get_time_since_last_mix()
 	# Compensate for output latency.
 	
 	#print("TIME: ", time)
 	# This is from the docs, but I don't think it ever 
 	# gets a value other than 0
-	time += AudioServer.get_output_latency()
+	#TEST 1time += AudioServer.get_output_latency()
 	
 	
 	
@@ -118,12 +123,12 @@ func _process(_delta):
 	
 	# I really have no idea why this is having the best results
 	# for making the latency match up with the song
-	if time > 0.003:
+	# TEST 1 if time > 0.003:
 		# 0.003 was good but lagged at the end
 		
 		#time = time - 0.003
-		time = fmod(time, 0.003)
-		latency = time
+		#TEST 1 time = fmod(time, 0.003)
+		#TEST 1 latency = time
 	
 	pass
 
@@ -790,7 +795,8 @@ func displayChords():
 				# chords still have lag and I have no idea how
 				var targetTime = actualChordTimeArray[i] - actualChordTimeArray[i - 1]
 				var testLatency = (start_time + actualChordTimeArray[i]) - (start_time + $AudioStreamPlayer.get_playback_position())
-				yield(get_tree().create_timer(targetTime-testLatency/2750), "timeout")
+				#yield(get_tree().create_timer(targetTime-testLatency), "timeout")
+				yield(get_tree().create_timer(targetTime), "timeout")
 		#"""
 		
 		if noteLowE != null:
@@ -833,7 +839,8 @@ func launchNotes():
 	
 	for i in noteNodeArray.size():
 		#add_child(noteNodeArray[i])
-		yield(get_tree().create_timer(noteNodeArray[i].get_animationStartTime() - latency),"timeout")
+		#yield(get_tree().create_timer(noteNodeArray[i].get_animationStartTime() - latency),"timeout")
+		yield(get_tree().create_timer(noteNodeArray[i].get_animationStartTime()),"timeout")
 		noteNodeArray[i].visible = true
 		if !($AudioStreamPlayer.playing):
 			$AudioStreamPlayer.play()
